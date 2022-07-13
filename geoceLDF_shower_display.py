@@ -27,8 +27,10 @@ from skimage.draw import polygon
 from skimage.draw import rectangle
 from skimage.draw import disk
 
-xmax_DF = pd.read_csv('./Xmax.dat')
-XmaxInterp = interp1d(10 ** xmax_DF.energy_log10.values, xmax_DF.xmax_gcm2.values, kind="slinear")
+xmax_DF = pd.read_csv("./Xmax.dat")
+XmaxInterp = interp1d(
+    10 ** xmax_DF.energy_log10.values, xmax_DF.xmax_gcm2.values, kind="slinear"
+)
 
 # triangle
 def CreateArray_triangle(side=7, stations_distance_km=1.500, array_layout="square"):
@@ -211,10 +213,17 @@ def Create_array_layout(
             array_layout=array_layout,
         )
 
+
 # calculate energy fluences
 def Calculate_energy_fluences(
-        station_dict, energy, azimuth, zenith, core_x_km=0, core_y_km=0,
-        B_earthVector = helper.get_magnetic_field_vector(site="auger")):
+    station_dict,
+    energy,
+    azimuth,
+    zenith,
+    core_x_km=0,
+    core_y_km=0,
+    B_earthVector=helper.get_magnetic_field_vector(site="auger"),
+):
     km2meters = 1000
     core_x_m = core_x_km * km2meters
     core_y_m = core_y_km * km2meters
@@ -223,9 +232,10 @@ def Calculate_energy_fluences(
     # observer height
     obsheight = 1564.0
     # magnetic field vector
-    
     B_earth = np.sqrt(np.sum(B_earthVector ** 2))
-    alpha = helper.get_sine_angle_to_lorentzforce(zenith, azimuth, magnetic_field_vector=B_earthVector)
+    alpha = helper.get_sine_angle_to_lorentzforce(
+        zenith, azimuth, magnetic_field_vector=B_earthVector
+    )
     # calculate radiation energy and xmax and dxmax
     Erad = (
         1000000
@@ -297,6 +307,7 @@ def draw_figure_w_toolbar(canvas, fig, canvas_toolbar):
     def on_key_press(event):
         key_press_handler(event, canvas, toolbar)
         canvas.TKCanvas.mpl_connect("key_press_event", on_key_press)
+
     return figure_canvas_agg
 
 
@@ -324,12 +335,13 @@ B_earthVector = helper.get_magnetic_field_vector(site="auger")
 # emphasize font
 font_emphasize = ("Helvetica", 14, "bold")
 
-output_mag_field = sg.Text("Magnetic field is set to: {}, {}, {}.".format(*B_earthVector))
+output_mag_field = sg.Text(
+    "Magnetic field is set to: {}, {}, {}.".format(*B_earthVector)
+)
 
 array_list_column = [
-
-    [   sg.Text("CONTROL PANEL", font=font_emphasize,)],
-    [   sg.HorizontalSeparator()],
+    [sg.Text("CONTROL PANEL", font=font_emphasize)],
+    [sg.HorizontalSeparator()],
     [
         sg.Text("Magnetic field vector (x,y,z) [Gauss]: "),
         sg.In(
@@ -363,7 +375,7 @@ array_list_column = [
         ),
     ],
     [
-        sg.Text("Station distance [km]"+' '*14),
+        sg.Text("Station distance [km]" + " " * 14),
         sg.In(
             size=(4, 1),
             default_text=def_stations_distance_km,
@@ -372,7 +384,7 @@ array_list_column = [
         ),
     ],
     [
-        sg.Text("Stations layout"+' '*23),
+        sg.Text("Stations layout" + " " * 23),
         sg.Combo(
             ["triangle", "square"],
             default_value=def_stations_layout,
@@ -380,7 +392,7 @@ array_list_column = [
         ),
     ],
     [
-        sg.Text("Array layout"+' '*27),
+        sg.Text("Array layout" + " " * 27),
         sg.Combo(
             ["circle", "square", "hexagon", "octagon"],
             default_value=def_stations_layout,
@@ -417,7 +429,7 @@ shower_list_column = [
         sg.Slider(
             range=(1, 94),
             resolution=1,
-            size=(30,20),
+            size=(30, 20),
             default_value=def_energy,
             orientation="h",
             key="-ENERGY-",
@@ -428,7 +440,7 @@ shower_list_column = [
         sg.Slider(
             range=(25, 84),
             resolution=1,
-            size=(30,20),
+            size=(30, 20),
             default_value=def_zenith,
             orientation="h",
             key="-ZENITH-",
@@ -439,7 +451,7 @@ shower_list_column = [
         sg.Slider(
             range=(0, 360),
             resolution=1,
-            size=(30,20),
+            size=(30, 20),
             default_value=def_azimuth,
             orientation="h",
             key="-AZIMUTH-",
@@ -459,9 +471,9 @@ shower_list_column = [
     ],
     [
         sg.Text("Shower type:\t"),
-        sg.Radio('Hadronic', "PRIMARY1", default=True, key="-IN2-"), 
-  #      sg.Radio("Neutrino shower [not implemented]", "PRIMARY1", default=False)
-    ]
+        sg.Radio("Hadronic", "PRIMARY1", default=True, key="-IN2-"),
+        #      sg.Radio("Neutrino shower [not implemented]", "PRIMARY1", default=False)
+    ],
 ]
 
 submit_array_column = [
@@ -471,17 +483,26 @@ submit_array_column = [
         sg.Slider(
             range=(0.2, 50),
             resolution=0.2,
-            size=(30,20),
+            size=(30, 20),
             default_value="20",
             orientation="h",
             key="-MARKER_SIZE-",
         ),
     ],
-    [sg.Checkbox('Show magnetic field direction', default=False, key="-SHOW_MAG_VECTOR-")],
+    [
+        sg.Checkbox(
+            "Show magnetic field direction", default=False, key="-SHOW_MAG_VECTOR-"
+        )
+    ],
     [sg.Button("UPDATE", key="-UPDATE-")],
     [sg.HorizontalSeparator()],
 ]
-values = {"-MARKER_SIZE-": "20", '-MAG_VECTOR_X-':B_earthVector[0], '-MAG_VECTOR_Y-': B_earthVector[1], '-SHOW_MAG_VECTOR-':False}
+values = {
+    "-MARKER_SIZE-": "20",
+    "-MAG_VECTOR_X-": B_earthVector[0],
+    "-MAG_VECTOR_Y-": B_earthVector[1],
+    "-SHOW_MAG_VECTOR-": False,
+}
 
 submit_shower_column = [
     [sg.Button("SUBMIT", key="-SUBMIT-")],
@@ -567,17 +588,22 @@ layout = [
 
 ########################################################################
 
+
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     new_cmap = colors.LinearSegmentedColormap.from_list(
-        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
-        cmap(np.linspace(minval, maxval, n)))
+        "trunc({n},{a:.2f},{b:.2f})".format(n=cmap.name, a=minval, b=maxval),
+        cmap(np.linspace(minval, maxval, n)),
+    )
     return new_cmap
 
-cmap_original = plt.get_cmap('jet')
+
+cmap_original = plt.get_cmap("jet")
 cmap = truncate_colormap(cmap_original, 0.2, 1)
 
 left_A = 0.2
 right_A = 0.9
+
+
 def drawChart(station_DF, values=None):
     _VARS["pltFig"] = plt.figure(figsize=(7, 5))
     # plt.scatter(station_DF.x.values, station_DF.y.values)
@@ -589,7 +615,7 @@ def drawChart(station_DF, values=None):
         s=float(values["-MARKER_SIZE-"]),
         vmin=np.log10(5),
         vmax=4,
-        c=np.zeros(station_DF.x.values.size)
+        c=np.zeros(station_DF.x.values.size),
     )
     cb = plt.colorbar(sc, ax=ax)
     ax.figure.set_size_inches(8, 6)
@@ -618,7 +644,7 @@ def updateChart(station_DF, values=None):
         s=float(values["-MARKER_SIZE-"]),
         vmin=np.log10(5),
         vmax=4,
-        c=np.zeros(station_DF.x.values.size)
+        c=np.zeros(station_DF.x.values.size),
     )
     cb = plt.colorbar(sc, ax=ax)
     ax.figure.set_size_inches(8, 6)
@@ -628,10 +654,20 @@ def updateChart(station_DF, values=None):
     xlim = ax.get_xlim()
     ylim = ax.get_ylim()
     length = np.abs(np.diff(xlim)[0]) / 2.5
-    if values['-SHOW_MAG_VECTOR-'] == True:
+    if values["-SHOW_MAG_VECTOR-"] == True:
         start_x = np.mean(station_DF.x.values)
         start_y = np.mean(station_DF.y.values)
-        ax.arrow(start_x, start_y, float(values['-MAG_VECTOR_X-'])*length*4, float(values['-MAG_VECTOR_Y-'])*length*4, width=0.1, head_width=20*(length/250), head_length=20*(length/250), length_includes_head=False, color='black')
+        ax.arrow(
+            start_x,
+            start_y,
+            float(values["-MAG_VECTOR_X-"]) * length * 4,
+            float(values["-MAG_VECTOR_Y-"]) * length * 4,
+            width=0.1,
+            head_width=20 * (length / 250),
+            head_length=20 * (length / 250),
+            length_includes_head=False,
+            color="black",
+        )
     _VARS["pltFig"].subplots_adjust(left=left_A, right=right_A)
     _VARS["fig_agg"] = draw_figure_w_toolbar(
         _VARS["window"]["-CANVAS-"].TKCanvas,
@@ -673,17 +709,32 @@ def updateChart2(station_DF, values=None):
     )
     ax.plot(shower_ax_x, shower_ax_y, color="magenta", linewidth=3)
     ax.scatter(
-        c_x, c_y, marker="x", color="magenta", s=float(values["-MARKER_SIZE-"] * 10), linewidths=3
+        c_x,
+        c_y,
+        marker="x",
+        color="magenta",
+        s=float(values["-MARKER_SIZE-"] * 10),
+        linewidths=3,
     )
     # ax.set_xlim(xlim)
     # ax.set_ylim(ylim)
     ax.set_xlabel("km")
     ax.set_ylabel("km")
     cb.set_label("log10(energy fluence/eV/m\u00b2)")
-    if values['-SHOW_MAG_VECTOR-'] == True:
+    if values["-SHOW_MAG_VECTOR-"] == True:
         start_x = np.mean(station_DF.x.values)
         start_y = np.mean(station_DF.y.values)
-        ax.arrow(start_x, start_y, float(values['-MAG_VECTOR_X-'])*length*4, float(values['-MAG_VECTOR_Y-'])*length*4, width=0.1, head_width=20*(length/250), head_length=20*(length/250), length_includes_head=False, color='black')
+        ax.arrow(
+            start_x,
+            start_y,
+            float(values["-MAG_VECTOR_X-"]) * length * 4,
+            float(values["-MAG_VECTOR_Y-"]) * length * 4,
+            width=0.1,
+            head_width=20 * (length / 250),
+            head_length=20 * (length / 250),
+            length_includes_head=False,
+            color="black",
+        )
     _VARS["pltFig"].subplots_adjust(left=left_A, right=right_A)
     #  ax2 = _VARS['pltFig'] .add_subplot(212)
     #  ax2.hist(station_DF.energy_fluence.values)
@@ -692,7 +743,9 @@ def updateChart2(station_DF, values=None):
         _VARS["pltFig"],
         _VARS["window"]["-CANVAS_CONTROL-"].TKCanvas,
     )
-  #  return start_x, start_y, float(values['-MAG_VECTOR_X-']), float(values['-MAG_VECTOR_Y-'])
+
+
+#  return start_x, start_y, float(values['-MAG_VECTOR_X-']), float(values['-MAG_VECTOR_Y-'])
 
 
 def get_shower_axis(c_x=0, c_y=0, angle=0, length=1):
@@ -735,8 +788,10 @@ def updateChartB(station_DF):
     plt.clf()
     _VARS["pltFigB"].clear()
     ax = _VARS["pltFigB"].add_subplot(111)
-    if 'energy_fluence' in station_DF:
-        ax.hist(station_DF.energy_fluence[(station_DF.energy_fluence.values >= 5)].values)
+    if "energy_fluence" in station_DF:
+        ax.hist(
+            station_DF.energy_fluence[(station_DF.energy_fluence.values >= 5)].values
+        )
     ax.set_xlabel("energy fluence [eV/m\u00b2]")
     ax.set_ylabel("frequency")
     _VARS["pltFigB"].subplots_adjust(left=left_B, bottom=bottom_B, right=right_B)
@@ -749,7 +804,9 @@ def updateChartB(station_DF):
 
 ########################################################################
 
-_VARS["window"] = sg.Window("geoceLDF cosmic air shower display", layout, finalize=True, resizable=True)
+_VARS["window"] = sg.Window(
+    "geoceLDF cosmic air shower display", layout, finalize=True, resizable=True
+)
 
 
 def open_window():
@@ -768,12 +825,15 @@ def open_window():
             break
     _VARS["window_help"].close()
 
+
 def open_window_file_error():
     layout = [
         [
             sg.Text(
                 "File reading failed!\nCheck whether the path is correct or whether the file format is correct.\nRequired format is CSV where first column are the stations numbers and the 2,3 and 4th column are the station coordinates.",
-            font=font_emphasize, justification='center')
+                font=font_emphasize,
+                justification="center",
+            )
         ]
     ]
     _VARS["window_read_error"] = sg.Window("ERROR", layout, modal=True)
@@ -783,6 +843,7 @@ def open_window_file_error():
         if event == "Exit" or event == sg.WIN_CLOSED:
             break
     _VARS["window_read_error"].close()
+
 
 drawChart(pd.DataFrame(station_dict).T, values=values)
 drawChartB(pd.DataFrame(station_dict).T)
@@ -806,8 +867,8 @@ while True:
             "Total number of stations in the array: {}".format(len(station_dict))
         )
         fluence_info.update(fluence_def_string(station_DF))
-        _VARS["window"].find_element('-CORE_X-').update(value=station_DF.x.mean())
-        _VARS["window"].find_element('-CORE_Y-').update(value=station_DF.y.mean())
+        _VARS["window"].find_element("-CORE_X-").update(value=station_DF.x.mean())
+        _VARS["window"].find_element("-CORE_Y-").update(value=station_DF.y.mean())
     if event == "-SUBMIT-":
         output.update(
             "Energy: {} [EeV] Azimuth: {} [degs] Zenith: {} [degs] Core X: {:.2f} [km] Core Y:{:.2f} [km]".format(
@@ -824,7 +885,13 @@ while True:
         core_x_km = float(values["-CORE_X-"])
         core_y_km = float(values["-CORE_Y-"])
         station_dict = Calculate_energy_fluences(
-            station_dict, energy, azimuth, zenith, core_x_km, core_y_km, B_earthVector=B_earthVector
+            station_dict,
+            energy,
+            azimuth,
+            zenith,
+            core_x_km,
+            core_y_km,
+            B_earthVector=B_earthVector,
         )
         station_DF = pd.DataFrame(station_dict).T
         updateChart2(station_DF, values=values)
@@ -849,8 +916,8 @@ while True:
                 "Total number of stations in the array: {}".format(len(station_dict))
             )
             fluence_info.update(fluence_def_string(station_DF))
-            _VARS["window"].find_element('-CORE_X-').update(value=station_DF.x.mean())
-            _VARS["window"].find_element('-CORE_Y-').update(value=station_DF.y.mean())
+            _VARS["window"].find_element("-CORE_X-").update(value=station_DF.x.mean())
+            _VARS["window"].find_element("-CORE_Y-").update(value=station_DF.y.mean())
     if event == "-UPDATE-":
         updateChart(station_DF, values=values)
         output2.update(
@@ -860,5 +927,13 @@ while True:
     if event == "-HELP-":
         open_window()
     if event == "-SET_MAGNETIC_VECTOR-":
-        B_earthVector = np.array([values['-MAG_VECTOR_X-'], values['-MAG_VECTOR_Y-'], values['-MAG_VECTOR_Z-']]).astype(float)
-        output_mag_field.update("Magnetic field set to: {}, {}, {}.".format(*B_earthVector))
+        B_earthVector = np.array(
+            [
+                values["-MAG_VECTOR_X-"],
+                values["-MAG_VECTOR_Y-"],
+                values["-MAG_VECTOR_Z-"],
+            ]
+        ).astype(float)
+        output_mag_field.update(
+            "Magnetic field set to: {}, {}, {}.".format(*B_earthVector)
+        )
