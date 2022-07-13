@@ -225,7 +225,7 @@ def Calculate_energy_fluences(
     # magnetic field vector
     
     B_earth = np.sqrt(np.sum(B_earthVector ** 2))
-    alpha = helper.get_angle_to_magnetic_field_vector(zenith, azimuth)
+    alpha = helper.get_sine_angle_to_lorentzforce(zenith, azimuth, magnetic_field_vector=B_earthVector)
     # calculate radiation energy and xmax and dxmax
     Erad = (
         1000000
