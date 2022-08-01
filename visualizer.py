@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  geoceLDF_shower_display.py
+#  visualizer.py
 
 import PySimpleGUI as sg
 import matplotlib.pyplot as plt
@@ -805,7 +805,7 @@ def updateChartB(station_DF):
 ########################################################################
 
 _VARS["window"] = sg.Window(
-    "geoceLDF cosmic air shower display", layout, finalize=True, resizable=True
+    "Extensive Air Shower array visualizer", layout, finalize=True, resizable=True
 )
 
 
