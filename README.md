@@ -1,5 +1,5 @@
 # Info
-This code allows visualizing calculated energy fluences using Christian Glaser's geoceLDF module for various types of arrays.
+This code allows visualizing calculated energy fluences using Christian Glaser's [geoceLDF package](https://github.com/cg-laser/geoceLDF) for various types of arrays.
 A custom array can be also used. Use files in CSV format where the first column is the station number and the following three are the stations x,y, and z coordinates.
 
 # Prerequisites:
