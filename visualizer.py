@@ -528,10 +528,16 @@ output2 = sg.Text(
     justification="center",
 )
 
+w_1, h_1 = figsize_1 = (7, 5)     # figure size
+w_2, h_2 = figsize_2 = (4.5, 4.5)
+dpi = 100 
+size_1 = (w_1*dpi, h_1*dpi)
+size_2 = (w_2*dpi, h_2*dpi)
+
 image_viewer_column = [
     [output],
     [output2],
-    [sg.Canvas(key="-CANVAS-")],
+    [sg.Canvas(size=size_1, key="-CANVAS-")],
     [sg.Canvas(key="-CANVAS_CONTROL-")],
     #    [sg.Canvas(key="-CANVAS_B-")]
 ]
@@ -559,7 +565,7 @@ fluence_info = sg.Text(
 )
 image_viewer_column2 = [
     [fluence_info],
-    [sg.Canvas(key="-CANVAS_B-")],
+    [sg.Canvas(size=size_2, key="-CANVAS_B-")],
     [sg.Canvas(key="-CANVAS_CONTROL_B-")],
 ]
 
@@ -605,7 +611,7 @@ right_A = 0.9
 
 
 def drawChart(station_DF, values=None):
-    _VARS["pltFig"] = plt.figure(figsize=(7, 5))
+    _VARS["pltFig"] = plt.figure(figsize=figsize_1)
     # plt.scatter(station_DF.x.values, station_DF.y.values)
     ax = _VARS["pltFig"].add_subplot(111)
     sc = ax.scatter(
@@ -622,7 +628,7 @@ def drawChart(station_DF, values=None):
     ax.set_xlabel("km")
     ax.set_ylabel("km")
     cb.set_label("log10(energy fluence/eV/m\u00b2)")
-    _VARS["pltFig"].subplots_adjust(left=left_A, right=right_A)
+ #   _VARS["pltFig"].subplots_adjust(left=left_A, right=right_A)
     _VARS["fig_agg"] = draw_figure_w_toolbar(
         _VARS["window"]["-CANVAS-"].TKCanvas,
         _VARS["pltFig"],
@@ -768,7 +774,7 @@ right_B = 0.9
 
 
 def drawChartB(station_DF):
-    _VARS["pltFigB"] = plt.figure(figsize=(4.5, 4.5))
+    _VARS["pltFigB"] = plt.figure(figsize=figsize_2)
     # plt.scatter(station_DF.x.values, station_DF.y.values)
     ax = _VARS["pltFigB"].add_subplot(111)
     ax.set_xlabel("energy fluence [eV/m\u00b2]")
